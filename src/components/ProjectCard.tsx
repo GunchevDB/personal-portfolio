@@ -48,7 +48,6 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
-      // unify legacy -> new
       const links = {
             demo: project.liveUrl ?? project.links?.demo,
             repo: project.githubUrl ?? project.links?.repo,
@@ -114,7 +113,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
                                     <button
                                           onClick={(e) => { e.stopPropagation(); open(links.demo); }}
                                           className="p-2 bg-white/10 text-gray-300 rounded-lg hover:bg-white/20 transition-colors"
-                                          title="Demo / Video"
+                                          title="Live Website / Demo"
                                     >
                                           <PlayCircle size={16} />
                                     </button>

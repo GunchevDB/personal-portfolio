@@ -48,70 +48,91 @@ const Projects: React.FC<ProjectsProps> = ({ onProjectSelect }) => {
             },
             {
                   id: '2',
-                  title: 'E-Commerce Platform',
-                  description: 'Full-stack e-commerce solution with payment processing.',
-                  image: 'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=800',
-                  technologies: ['Next.js', 'PostgreSQL', 'Stripe', 'Tailwind CSS'],
-                  liveUrl: 'https://example.com',
-                  githubUrl: 'https://github.com',
-                  details: 'Complete shopping experience with secure payments and inventory management.',
+                  title: 'Innerbuddies - Microbiome Health Platform',
+                  description: 'Redesign of Innerbuddies` web app for microbiome health tracking and personalized recommendations.',
+                  image: '/images/innerbuddies/Inner_Buddies_logo_RGB_copy.avif',
+                  technologies: ['Angular 16', 'Python', 'SCSS', 'Jupyter Notebook', 'Vite'],
+                  details: '',
                   isCaseStudy: true,
+                  isNDA: true,
+                  ndaNote: '',
+                  links: {
+                        company: 'https://www.innerbuddies.com/',
+                        figma: 'https://www.figma.com/design/4SHniMfeMYPwMbIPW3YrRS/Company-Work?node-id=3530-2316&p=f',
+                  },
                   caseStudy: {
-                        overview: 'A modern e-commerce platform designed to compete with industry leaders while providing superior user experience and merchant tools.',
-                        problemStatement: 'Small to medium businesses needed an affordable e-commerce solution that could scale with their growth. Existing platforms were either too expensive or lacked essential features.',
-                        research: 'Surveyed 100+ small business owners and analyzed 20 existing e-commerce platforms. Identified key requirements: easy setup, mobile-first design, integrated payments, and comprehensive analytics.',
-                        designProcess: 'Created user journey maps for both customers and merchants. Designed a component-based system in Figma with focus on conversion optimization and accessibility.',
-                        iterations: 'Conducted 3 rounds of usability testing with 50+ participants. Major improvements included: streamlined checkout process, enhanced product discovery, and simplified merchant dashboard.',
-                        testing: 'Performed extensive A/B testing on checkout flow, product pages, and navigation. Achieved 25% improvement in conversion rates and 40% reduction in cart abandonment.',
-                        implementation: 'Built with Next.js for optimal performance and SEO. Used PostgreSQL for robust data management and Stripe for secure payments. Implemented advanced caching strategies and CDN optimization.',
-                        results: 'Launched with 100+ merchants in first month. Average conversion rate of 3.2% (industry average 2.1%). 99.9% uptime and sub-2-second page load times.',
+                        overview: `For my internship at InnerBuddies, I focused on redesigning and extending their microbiome health platform. The goal was to improve the usability of their Angular front-end, align it with the company’s new visual identity, and build new features that made it easier for users to track their progress and access personalized insights. By collaborating closely with the team, I worked on streamlining the user journey from receiving their kit to reviewing reports and managing daily habits through tools like the Food Diary and downloadable reports.`,
+                        problemStatement: `InnerBuddies faces the challenge of effectively engaging its diverse target demographic of younger and older females through its website design. The current design does not adequately address the varying needs and preferences of these two distinct age groups. This impacts user experience, satisfaction, and ultimately, customer conversion and retention rates. A redesigned website that appeals to both age groups, enhances user experience, and supports easy navigation could significantly boost engagement, leading to increased user acquisition and customer loyalty.`,
+                        research: `I worked over multiple research methods during this intership, where I firstly focused on improving and keeping the identity of Innerbuddies color palette, ensuring the consistency between the systems. Then I went into a competitor analysis of several Food diary platforms such as MyFitnessPal, PlateJoy and more to identify their strengths and issues when filling in food intake. Then I made use of a best practices study in order to target to target the readability and accessibility for older audiences where I emphasized on larger fonts, better color contrast and straightforward layouts. Additionally I analyzed the user making use of the CMD 5Ws framework to better understand the users, their goals and hinderances and why the redesign is critical for growth of the brand.`,
+                        designProcess: `I started with quick sketches to share early ideas. These covered the Food Diary, Add Item form, and Kit Overview screen. Sketches then moved into Figma prototypes where I refined the UI using the provided fonts, colors, and icons. For the Food Diary, I moved from a two-page process to a single-page view with inline editing and QoL improvements. For the Kit Overview, I explored ways to replace the cramped table with a more visual and intuitive layout. I constantly balanced youthful aesthetics with accessibility for older users by using neutral backgrounds, restrained color accents, and larger type for clarity.`,
+                        iterations: `The project featured a lot of iterations and collaborations. Mentors provided daily feedback on designs, which shaped features like the Food Diary, Kit Overviews and PDF Dashboard export.`,
+                        testing: `Managed to test constantly with the team and stakeholders, gathering feedback from target group in 2 different testing sessions, where new changes were positively received. Improved workflows for food diary, kit overview and quick downloadable dashboard PDF export to share with personal nitrutionists.`,
+                        implementation: `Website used Angular 16 framework with SCSS for styling. I implemented all redesign using component-based architecture, ensuring reusability. Additionally set up the downloadable PDF report feature using Python in a Jupyter Notebook that pulls the header and user data from the frontend.`,
+                        results: `AI Generated dashboard results and PDF print out increased user satisfaction and increased profits by 20% (~7000€ in new yearly revenue), also including manual labour reduction by around 5 hours/week. The new Food Diary design sped up the process of filling in the diary by 70% and reduced errors. Created an API endpoint to export Bacteria list in user's sample which helped with the B2B customer productivity by 30%.`,
                         images: [
-                              'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=1200',
-                              'https://images.pexels.com/photos/3769747/pexels-photo-3769747.jpeg?auto=compress&cs=tinysrgb&w=1200',
-                              'https://images.pexels.com/photos/4968630/pexels-photo-4968630.jpeg?auto=compress&cs=tinysrgb&w=1200'
+                              '/images/innerbuddies/food_diary.png',
+                              '/images/innerbuddies/kit_overview.png',
+                              '/images/innerbuddies/dashboard.png',
                         ]
                   }
             },
             {
                   id: '3',
-                  title: 'Fitness Mobile App',
-                  description: 'Cross-platform fitness tracking with social features.',
-                  image: 'https://images.pexels.com/photos/4162481/pexels-photo-4162481.jpeg?auto=compress&cs=tinysrgb&w=800',
-                  technologies: ['React Native', 'Firebase', 'Redux', 'Expo'],
-                  liveUrl: 'https://example.com',
-                  githubUrl: 'https://github.com',
-                  details: 'Comprehensive fitness tracking with workout plans and social connectivity.'
+                  title: 'StackAssist - Stacking & Loading Optimization',
+                  description: 'Replacing paper stacking instructions with a 3D interactive web app for logistics workers.',
+                  image: '/images/stackassist/StackAssist.jpg',
+                  technologies: ['React', 'Three.js', 'WebGL', 'GSAP', 'Vite'],
+                  details: '',
+                  isCaseStudy: true,
+                  links: {
+                        company: 'https://faes.nl/',
+                        figma: 'https://www.figma.com/design/4SHniMfeMYPwMbIPW3YrRS/Company-Work?node-id=3882-2316&p=f',
+                        demo:'https://boxes-stack-threejs.netlify.app/',
+                        repo: 'https://github.com/GunchevDB/StackAssist-Netlify'
+                  },
+                  caseStudy: {
+                        overview: `During semester 6 of my studies at Fontys, I collaborated with FAES, a logistics solutions provider, where in a team of 5 we worked to understand the issues FAES workers faced when using StackAssist and improve their day to day operations.`,
+                        problemStatement: `FAES workers and their customers who use StackAssist face challenges with their current paper-based stacking instructions. More specifically, they do know how to stack the boxes on top of a palette, but they don't follow the most optimal way of stacking, which leads to inefficient use of space and potential damage during transport.`,
+                        research: `At the start of the project, in a team of 5, I worked on research about warehouse workers in the Netherlands to better understand the user. Then focused on researching the software opportunities for a wearable device they can use during stacking, where I saw possibility for a 3D visualisation and went deeper by understanding WebGL possibilities.`,
+                        designProcess: `Began brainstorming and tried a new approach, using the Worst-idea where then I continued with storyboards. Early phone wireframes explroed both portrait and landscape views. The idea consisted of replacing the page flipping with a single 3D visualisation on the screen with a step by step.`,
+                        iterations: `Improved the controls to be bigger and minimal for warehouse workers who use gloves. Removed the unnecessary rotations and added a progress bar to show how many steps are left. Focused on landscape first UI after stakeholder feedback.`,
+                        testing: `Began testing the Three.js prototype with users and stakeholders, where we gave them 2 different stacking instructions that are very similar in difficulty and compared using the app vs paper. Results showed that using the app was 25% faster and had 50% less stacking errors.`,
+                        implementation: `Implementation during testing was done using Vanilla JS, Three.js and Vite packaged as a PWA. Later when the rest of the team finished up the UI, we implemented everything together in React. We explored the ability to use StackAssist API to pull stacking instructions and build the GLTF model to showcase in Three.js.`,
+                        results: `In the end the application was very positively received by both users and stakeholders. The 3D visualisation made it much easier to understand the stacking instructions at a glance and the application concept was also featured in the Brainport Industry Campus(BIC Eindhoven) innovation expo.`,
+                        images: [
+                              '/images/stackassist/threejs_demo.png',
+                              '/images/stackassist/figma_showcase.png',
+                        ]
+                  }
             },
             {
                   id: '4',
-                  title: '3D Portfolio Site',
-                  description: 'Interactive 3D portfolio with immersive experiences.',
-                  image: 'https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?auto=compress&cs=tinysrgb&w=800',
-                  technologies: ['Three.js', 'WebGL', 'GSAP', 'React'],
-                  liveUrl: 'https://example.com',
-                  githubUrl: 'https://github.com',
-                  details: 'Award-winning portfolio showcasing advanced WebGL capabilities.'
+                  title: 'Maina Town - Local Culture',
+                  description: 'Redesign of Maina Town`s website to improve user engagement and showcase local culture.',
+                  image: 'images/mainatown/mainatown_hero.png',
+                  technologies: ['Wordpress', 'Elementor'],
+                  liveUrl: 'https://mainatown.bg',
+                  details: 'Passion project to redesign Maina Town`s website during my university studies, focusing on user experience and visual appeal.'
             },
             {
                   id: '5',
-                  title: 'Chat Platform',
-                  description: 'Real-time messaging with video calls and file sharing.',
-                  image: 'https://images.pexels.com/photos/5082579/pexels-photo-5082579.jpeg?auto=compress&cs=tinysrgb&w=800',
-                  technologies: ['Socket.io', 'WebRTC', 'Node.js', 'MongoDB'],
-                  liveUrl: 'https://example.com',
-                  githubUrl: 'https://github.com',
-                  details: 'Scalable chat platform supporting thousands of concurrent users.'
+                  title: 'RetroSafari - Vintage Car Tours',
+                  description: 'Owned by MainaTown, RetroSafari is a website for booking vintage car tours around Plovdiv, Bulgaria.',
+                  image: 'images/retrosafari/retrosafari_hero.png',
+                  technologies: ['Wordpress'],
+                  liveUrl: 'https://retrosafari.bg',
+                  details: 'Used a Wordpress template and connected it with an external booking system(Checkfront) to help users book vintage car tours easily.'
             },
             {
                   id: '6',
-                  title: 'Blockchain Voting',
-                  description: 'Secure voting platform built on blockchain technology.',
-                  image: 'https://images.pexels.com/photos/8369648/pexels-photo-8369648.jpeg?auto=compress&cs=tinysrgb&w=800',
-                  technologies: ['Solidity', 'Web3.js', 'Ethereum', 'React'],
-                  liveUrl: 'https://example.com',
-                  githubUrl: 'https://github.com',
-                  details: 'Transparent and secure voting system using smart contracts.'
-            }
+                  title: 'Personal Portfolio Website',
+                  description: 'Interactive 3D portfolio with immersive experiences.',
+                  image: '/images/portfolio/portfolio_hero.png',
+                  technologies: ['Three.js', 'WebGL', 'GSAP', 'React'],
+                  liveUrl: 'https://dimitar-gunchev.com',
+                  githubUrl: 'https://github.com/GunchevDB/personal-portfolio',
+                  details: 'Personal portfolio showcasing projects with 3D graphics and animations.'
+            },
       ];
 
       useEffect(() => {
@@ -164,31 +185,5 @@ const Projects: React.FC<ProjectsProps> = ({ onProjectSelect }) => {
             </section>
       );
 };
-// {
-//   id: '2',
-//   title: 'AddressID – Logistics Address Validation Tool',
-//   description: 'AI-powered address validation module for Logichainge’s Order Entry platform.',
-//   image: 'https://your-image-host.com/addressid-dashboard.jpg',
-//   technologies: ['Vue 3', 'Tailwind CSS', 'Pinia', 'Mapbox'],
-//   liveUrl: 'https://your-demo-or-video-link.com',
-//   githubUrl: 'https://github.com/yourusername/addressid', // or leave empty if private
-//   details: 'Designed and implemented AddressID, a frontend module that standardizes, validates, and corrects delivery addresses for logistics providers.',
-//   isCaseStudy: true,
-//   caseStudy: {
-//     overview: 'AddressID integrates with Logichainge’s Order Entry Module to reduce address errors and processing time. It uses AI to unify inconsistent entries and offers manual validation with real-time suggestions.',
-//     problemStatement: 'Logistics planners struggled with inconsistent and error-prone address data, creating delivery delays and higher operational costs.',
-//     research: 'Performed heuristic evaluations, best-practice reviews, and interviews with logistics experts. Identified pain points such as frequent tab-switching and unclear error states.',
-//     designProcess: 'Prototyped dashboards, validation tables, and bulk upload flows in Figma. Applied color-coded validation states, inline editing, and autocomplete for faster corrections.',
-//     iterations: 'Conducted multiple usability tests with company owners and planners. Iterated on table designs, filters, and map integration to streamline workflow.',
-//     testing: 'Created a KLM (Keystroke-Level Model) evaluation to predict efficiency gains. Estimated 35+ seconds saved per address versus manual lookup.',
-//     implementation: 'Built with Vue 3 Composition API, Tailwind CSS, Pinia, Vue Router, and Mapbox. Integrated authentication guards, bulk upload, change history, and dashboard components.',
-//     results: 'Projected to cut address errors by up to 50% and save 5–10 minutes per order, improving efficiency for logistics companies using Logichainge’s platform.',
-//     images: [
-//       'https://your-image-host.com/addressid-dashboard.jpg',
-//       'https://your-image-host.com/addressid-validation.jpg',
-//       'https://your-image-host.com/addressid-manual.jpg'
-//     ]
-//   }
-// }
 
 export default Projects;

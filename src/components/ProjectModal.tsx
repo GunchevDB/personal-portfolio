@@ -200,7 +200,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                 {links.demo && (
                   <a href={links.demo} target="_blank" rel="noopener noreferrer"
                      className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-black rounded-full hover:bg-gray-200 transition">
-                    <PlayCircle size={16} /> Demo / Video
+                    <PlayCircle size={16} /> Live Website / Demo
                   </a>
                 )}
                 {links.figma && (
