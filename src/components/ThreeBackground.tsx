@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
 const ThreeBackground: React.FC = () => {
@@ -25,7 +25,6 @@ const ThreeBackground: React.FC = () => {
     const canvas = renderer.domElement;
     renderer.domElement.style.pointerEvents = 'auto';
 
-    // Interaction state
     const mouse = new THREE.Vector2();
     const prevMouse = new THREE.Vector2();
     const raycaster = new THREE.Raycaster();
@@ -38,7 +37,6 @@ const ThreeBackground: React.FC = () => {
 
     const velocities = new Map<THREE.Object3D, THREE.Vector3>();
 
-    // Helpers
     const toNDC = (event: PointerEvent | MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -139,9 +137,16 @@ const ThreeBackground: React.FC = () => {
 
     const onPointerUp = () => {
       if (selectedObject) {
+        const dragDuration = Date.now() - dragStartTime;
         const mouseDelta = new THREE.Vector2().subVectors(mouse, prevMouse);
-        const throwForce = Math.min(mouseDelta.length() * 20, 15);
-        const v = new THREE.Vector3(mouseDelta.x * throwForce, mouseDelta.y * throwForce, (Math.random()-0.5)*throwForce*0.5);
+        const throwMultiplier = Math.max(0.8, 2.5 - dragDuration / 400);
+        const throwForce = Math.min(mouseDelta.length() * 20 * throwMultiplier, 20);
+
+        const v = new THREE.Vector3(
+          mouseDelta.x * throwForce,
+          mouseDelta.y * throwForce,
+          (Math.random() - 0.5) * throwForce * 0.5
+        );
         velocities.set(selectedObject, v);
 
         const mat = (selectedObject as THREE.Mesh).material as THREE.Material & { opacity?: number };
@@ -265,7 +270,10 @@ const ThreeBackground: React.FC = () => {
     <div
       ref={mountRef}
       className="fixed inset-0 z-0"
-      style={{ pointerEvents: 'auto', background: 'linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 50%,#1a1a1a 100%)' }}
+      style={{
+        pointerEvents: 'auto',
+        background: 'linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 50%,#1a1a1a 100%)'
+      }}
     />
   );
 };

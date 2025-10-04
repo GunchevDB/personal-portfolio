@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, Github, FileText, Building2, PlayCircle, Palette, Globe, Shield } from 'lucide-react';
+import { Github, FileText, Building2, PlayCircle, Palette, Globe, Shield } from 'lucide-react';
 
 export interface Project {
       id: string;
@@ -8,22 +8,17 @@ export interface Project {
       image: string;
       technologies: string[];
       details: string;
-
-      // legacy (still supported)
       liveUrl?: string;
       githubUrl?: string;
-
-      // new flexible links
       links?: {
-            company?: string;   // company / product page
-            demo?: string;      // live demo OR video (YouTube/Loom)
-            repo?: string;      // GitHub/GitLab
-            figma?: string;     // Figma prototype/file
-            caseStudy?: string; // PDF / Notion write-up
-            docs?: string;      // docs/spec
+            company?: string;   
+            demo?: string;     
+            repo?: string;      
+            figma?: string;     
+            caseStudy?: string;
+            docs?: string;     
       };
 
-      // case study content
       isCaseStudy?: boolean;
       caseStudy?: {
             overview: string;
@@ -37,7 +32,6 @@ export interface Project {
             images?: string[];
       };
 
-      // NDA
       isNDA?: boolean;
       ndaNote?: string;
 }
@@ -97,7 +91,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
                         )}
                   </div>
 
-                  {/* link buttons (do NOT stop click for the label on the right) */}
                   <div className="flex justify-between items-center">
                         <div className="flex flex-wrap gap-2">
                               {links.company && (
@@ -145,7 +138,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
                                           <Globe size={16} />
                                     </button>
                               )}
-                              {/* Repo (hidden when NDA) */}
                               {!project.isNDA && links.repo && (
                                     <button
                                           onClick={(e) => { e.stopPropagation(); open(links.repo); }}
