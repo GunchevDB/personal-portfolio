@@ -28,7 +28,9 @@ const ThreeBackground: React.FC = () => {
     const mouse = new THREE.Vector2();
     const prevMouse = new THREE.Vector2();
     const raycaster = new THREE.Raycaster();
-    const dragPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    const dragPlane = new THREE.Plane();
+    const dragOffset = new THREE.Vector3();
+    const temporaryVector3 = new THREE.Vector3();
 
     let selectedObject: THREE.Object3D | null = null;
     let isDragging = false;
@@ -109,20 +111,23 @@ const ThreeBackground: React.FC = () => {
     const onPointerMove = (e: PointerEvent) => {
       prevMouse.copy(mouse);
       toNDC(e);
+
       if (isDragging && selectedObject) {
         raycaster.setFromCamera(mouse, camera);
         const p = new THREE.Vector3();
-        raycaster.ray.intersectPlane(dragPlane, p);
-        selectedObject.position.x = p.x;
-        selectedObject.position.y = p.y;
+        if (raycaster.ray.intersectPlane(dragPlane, p)) {
+        selectedObject.position.copy(p.add(dragOffset));
+    }
       }
     };
 
     const onPointerDown = (e: PointerEvent) => {
       prevMouse.copy(mouse);
       toNDC(e);
+
       raycaster.setFromCamera(mouse, camera);
       const hit = raycaster.intersectObjects(scene.children, true);
+
       if (hit.length) {
         selectedObject = hit[0].object;
         isDragging = true;
@@ -130,8 +135,17 @@ const ThreeBackground: React.FC = () => {
         canvas.style.cursor = 'grabbing';
         velocities.set(selectedObject, new THREE.Vector3());
 
+        const camNormal = camera.getWorldDirection(temporaryVector3).negate();
+        dragPlane.setFromNormalAndCoplanarPoint(camNormal, selectedObject.position);
+
+        const p = new THREE.Vector3();
+        raycaster.ray.intersectPlane(dragPlane, p);
+        dragOffset.copy(selectedObject.position).sub(p);
+
         const mat = (selectedObject as THREE.Mesh).material as THREE.Material & { opacity?: number };
-        if (mat && typeof mat.opacity === 'number') mat.opacity = Math.min(mat.opacity + 0.4, 1);
+        if (mat && typeof mat.opacity === 'number') {
+          mat.opacity = Math.min(mat.opacity + 0.4, 1);
+        }
       }
     };
 
