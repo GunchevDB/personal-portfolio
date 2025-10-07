@@ -18,10 +18,10 @@ const LaunchScreen: React.FC<LaunchScreenProps> = ({ isVisible, onScrollStart })
   useEffect(() => {
     if (!isVisible) return;
     const tl = gsap.timeline();
-    tl.fromTo(titleRef.current,    { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out' })
-      .fromTo(subtitle1Ref.current,{ y:  50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, '-=0.5')
-      .fromTo(subtitle2Ref.current,{ y:  40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, '-=0.4')
-      .fromTo(linksRef.current,    { y:  30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, '-=0.3')
+    tl.fromTo(titleRef.current, { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out' })
+      .fromTo(subtitle1Ref.current, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+      .fromTo(subtitle2Ref.current, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, '-=0.4')
+      .fromTo(linksRef.current, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, '-=0.3')
       .fromTo(scrollIndicatorRef.current, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }, '-=0.2');
   }, [isVisible]);
 
@@ -30,8 +30,8 @@ const LaunchScreen: React.FC<LaunchScreenProps> = ({ isVisible, onScrollStart })
     if (!el) return;
     const onScroll = () => {
       const maxScroll = window.innerHeight * 0.5;
-      const progress  = Math.min(window.scrollY / maxScroll, 1);
-      const scale     = Math.max(1 - progress, 0.2);
+      const progress = Math.min(window.scrollY / maxScroll, 1);
+      const scale = Math.max(1 - progress, 0.2);
       el.style.setProperty('--launch-scale', String(scale));
       el.style.opacity = String(scale);
     };
@@ -72,19 +72,45 @@ const LaunchScreen: React.FC<LaunchScreenProps> = ({ isVisible, onScrollStart })
 
           <div
             ref={linksRef}
-            className="flex justify-center space-x-8 mb-16"
+            className="flex flex-col items-center mb-16 space-y-4"
             style={{ pointerEvents: 'auto' }}
           >
-            <a href="mailto:gunchev.db@gmail.com" className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110">
-              <Mail size={24} />
-            </a>
-            <a href="https://github.com/GunchevDB" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110">
-              <Github size={24} />
-            </a>
-            <a href="https://www.linkedin.com/in/dimitar-gunchev-6aa139223/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110">
-              <Linkedin size={24} />
+            {/* Row of icons */}
+            <div className="flex justify-center space-x-8">
+              <a
+                href="mailto:gunchev.db@gmail.com"
+                className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110"
+              >
+                <Mail size={24} />
+              </a>
+              <a
+                href="https://github.com/GunchevDB"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110"
+              >
+                <Github size={24} />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/dimitar-gunchev-6aa139223/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110"
+              >
+                <Linkedin size={24} />
+              </a>
+            </div>
+
+            <a
+              href="/Dimitar-Gunchev-CV.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-xl md:text-xl text-gray-300 hover:text-white decoration-white/20 hover:decoration-white transition-colors hover:scale-110"
+            >
+              Resume
             </a>
           </div>
+
         </div>
       </div>
 

@@ -11,10 +11,8 @@ interface ProjectModalProps {
 }
 
 const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
-  // Lightbox is now an object: images[] + index (no hero ever included)
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
 
-  // lock scroll when modal is open
   useEffect(() => {
     const lock = !!project;
     document.body.style.overflow = lock ? 'hidden' : 'unset';
@@ -25,10 +23,8 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
     };
   }, [project]);
 
-  // Lightbox controls
   const openGridImage = useCallback((i: number) => {
     if (!project?.isCaseStudy || !project.caseStudy?.images) return;
-    // ONLY case-study images here (no hero)
     setLightbox({ images: project.caseStudy.images, index: i });
   }, [project]);
 
@@ -44,7 +40,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
     setLightbox({ images, index: (index + 1) % images.length });
   }, [lightbox]);
 
-  // Keyboard
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -137,7 +132,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
           </button>
 
           <div className="overflow-y-auto max-h-[90vh]">
-            {/* HERO (not clickable) */}
             <div className="relative overflow-hidden">
               <img
                 src={project.image}
@@ -189,7 +183,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                 </div>
               )}
 
-              {/* Links */}
               <div className="flex flex-wrap gap-3 sm:gap-4 pt-4">
                 {links.company && (
                   <a href={links.company} target="_blank" rel="noopener noreferrer"
@@ -238,7 +231,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
         </div>
       </div>
 
-      {/* LIGHTBOX: only case-study images */}
       {lightbox && (
         <div className="fixed inset-0 z-[10000] bg-black/90 backdrop-blur-sm flex items-center justify-center">
           <img
