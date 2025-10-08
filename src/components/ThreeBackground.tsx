@@ -11,6 +11,7 @@ const ThreeBackground: React.FC = () => {
 
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const isLowPerformance = isMobile || navigator.hardwareConcurrency <= 4;
+    const enableInteractions = !isMobile;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
@@ -21,9 +22,15 @@ const ThreeBackground: React.FC = () => {
     );
     camera.position.z = 10;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isLowPerformance });
+    const renderer = new THREE.WebGLRenderer({ 
+      alpha: true, 
+      antialias: true,
+      powerPreference: 'high-performance'
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(isLowPerformance ? 1 : Math.min(window.devicePixelRatio, 2));
+    
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    
     mountRef.current.appendChild(renderer.domElement);
     const canvas = renderer.domElement;
     renderer.domElement.style.pointerEvents = 'auto';
@@ -39,7 +46,6 @@ const ThreeBackground: React.FC = () => {
     let isDragging = false;
     let dragStartTime = 0;
     let currentHoveredObject: THREE.Object3D | null = null;
-    let isInteractingWithObject = false; 
 
     const velocities = new Map<THREE.Object3D, THREE.Vector3>();
 
@@ -50,28 +56,37 @@ const ThreeBackground: React.FC = () => {
     };
 
     const createEmojiTexture = (emoji: string) => {
+      const size = isMobile ? 256 : 128; 
       const c = document.createElement('canvas');
       const ctx = c.getContext('2d')!;
-      c.width = 128; c.height = 128;
+      c.width = size;
+      c.height = size;
       ctx.clearRect(0, 0, c.width, c.height);
-      ctx.font = '80px Arial';
+      ctx.font = `${size * 0.625}px Arial`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(emoji, c.width / 2, c.height / 2);
       const tex = new THREE.CanvasTexture(c);
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
       tex.needsUpdate = true;
       return tex;
     };
 
     const objects: THREE.Object3D[] = [];
-    
-    const geometryTypes = [
+    const geometryTypes = isMobile ? [
+      new THREE.SphereGeometry(0.5, 24, 24),
+      new THREE.OctahedronGeometry(0.7),
+      new THREE.IcosahedronGeometry(0.6, 1),
+      new THREE.DodecahedronGeometry(0.6),
+      new THREE.TorusGeometry(0.5, 0.2, 16, 64),
+    ] : [
       new THREE.BoxGeometry(1, 1, 1),
-      new THREE.SphereGeometry(0.5, 16, 16),
-      new THREE.ConeGeometry(0.5, 1, 16),
+      new THREE.SphereGeometry(0.5, 20, 20),
+      new THREE.ConeGeometry(0.5, 1, 20),
       new THREE.OctahedronGeometry(0.7),
       new THREE.TetrahedronGeometry(0.8),
-      new THREE.CylinderGeometry(0.4, 0.4, 1, 16),
+      new THREE.CylinderGeometry(0.4, 0.4, 1, 20),
       new THREE.DodecahedronGeometry(0.6),
       new THREE.IcosahedronGeometry(0.6),
       new THREE.TorusGeometry(0.5, 0.2, 12, 48),
@@ -80,15 +95,20 @@ const ThreeBackground: React.FC = () => {
     const emojis = ['🚀','⭐','💎','🔥','⚡','🌟','💫','🎯','🎨','🎭','🎪','🎲','🎳'];
     const softColors = ['#ffffff','#f0f0f0','#e8e8e8','#d0d0d0','#c8c8c8','#f5f5dc','#f0f8ff','#f8f8ff','#fffaf0','#f5f5f5'];
 
-    const numObjects = isLowPerformance 
-      ? Math.floor(Math.random() * 4) + 6
-      : Math.floor(Math.random() * 6) + 10;
+    const numObjects = isMobile 
+      ? Math.floor(Math.random() * 3) + 5 
+      : Math.floor(Math.random() * 6) + 10; 
     
     for (let i = 0; i < numObjects; i++) {
       let obj: THREE.Object3D;
       if (Math.random() < 0.3) {
         const texture = createEmojiTexture(emojis[Math.floor(Math.random() * emojis.length)]);
-        const material = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.8, alphaTest: 0.1 });
+        const material = new THREE.SpriteMaterial({ 
+          map: texture, 
+          transparent: true, 
+          opacity: 0.8, 
+          alphaTest: 0.1 
+        });
         const sprite = new THREE.Sprite(material);
         sprite.scale.set(1.5, 1.5, 1);
         obj = sprite;
@@ -121,8 +141,6 @@ const ThreeBackground: React.FC = () => {
       toNDC(e);
 
       if (isDragging && selectedObject) {
-        e.preventDefault(); 
-        
         raycaster.setFromCamera(mouse, camera);
         const p = new THREE.Vector3();
         if (raycaster.ray.intersectPlane(dragPlane, p)) {
@@ -139,9 +157,6 @@ const ThreeBackground: React.FC = () => {
       const hit = raycaster.intersectObjects(scene.children, true);
 
       if (hit.length) {
-        isInteractingWithObject = true;
-        e.preventDefault(); 
-        
         selectedObject = hit[0].object;
         isDragging = true;
         dragStartTime = Date.now();
@@ -159,8 +174,6 @@ const ThreeBackground: React.FC = () => {
         if (mat && typeof mat.opacity === 'number') {
           mat.opacity = Math.min(mat.opacity + 0.4, 1);
         }
-      } else {
-        isInteractingWithObject = false; 
       }
     };
 
@@ -184,7 +197,6 @@ const ThreeBackground: React.FC = () => {
         selectedObject = null;
       }
       isDragging = false;
-      isInteractingWithObject = false;
       canvas.style.cursor = 'default';
     };
 
@@ -224,24 +236,12 @@ const ThreeBackground: React.FC = () => {
       }
     };
 
-    const onTouchStart = (e: TouchEvent) => {
-      if (isInteractingWithObject) {
-        e.preventDefault();
-      }
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (isInteractingWithObject || isDragging) {
-        e.preventDefault();
-      }
-    };
-
-    canvas.addEventListener('pointermove', onPointerMove);
-    canvas.addEventListener('pointerdown', onPointerDown);
-    canvas.addEventListener('pointerup', onPointerUp);
-    canvas.addEventListener('pointermove', onPointerHover);
-    canvas.addEventListener('touchstart', onTouchStart, { passive: false });
-    canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+    if (enableInteractions) {
+      canvas.addEventListener('pointermove', onPointerMove);
+      canvas.addEventListener('pointerdown', onPointerDown);
+      canvas.addEventListener('pointerup', onPointerUp);
+      canvas.addEventListener('pointermove', onPointerHover);
+    }
 
     const onResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -259,7 +259,6 @@ const ThreeBackground: React.FC = () => {
       });
     };
     window.addEventListener('scroll', onScroll);
-
     let animationId = 0;
     let lastFrameTime = 0;
     const targetFPS = isLowPerformance ? 30 : 60;
@@ -322,12 +321,14 @@ const ThreeBackground: React.FC = () => {
       observer.disconnect();
       window.removeEventListener('resize', onResize);
       window.removeEventListener('scroll', onScroll);
-      canvas.removeEventListener('pointermove', onPointerMove);
-      canvas.removeEventListener('pointerdown', onPointerDown);
-      canvas.removeEventListener('pointerup', onPointerUp);
-      canvas.removeEventListener('pointermove', onPointerHover);
-      canvas.removeEventListener('touchstart', onTouchStart);
-      canvas.removeEventListener('touchmove', onTouchMove);
+      
+      if (enableInteractions) {
+        canvas.removeEventListener('pointermove', onPointerMove);
+        canvas.removeEventListener('pointerdown', onPointerDown);
+        canvas.removeEventListener('pointerup', onPointerUp);
+        canvas.removeEventListener('pointermove', onPointerHover);
+      }
+      
       cancelAnimationFrame(animationId);
       renderer.dispose();
       scene.clear();
