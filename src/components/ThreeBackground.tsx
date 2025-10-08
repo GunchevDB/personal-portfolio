@@ -39,6 +39,7 @@ const ThreeBackground: React.FC = () => {
     let isDragging = false;
     let dragStartTime = 0;
     let currentHoveredObject: THREE.Object3D | null = null;
+    let isInteractingWithObject = false; 
 
     const velocities = new Map<THREE.Object3D, THREE.Vector3>();
 
@@ -80,8 +81,8 @@ const ThreeBackground: React.FC = () => {
     const softColors = ['#ffffff','#f0f0f0','#e8e8e8','#d0d0d0','#c8c8c8','#f5f5dc','#f0f8ff','#f8f8ff','#fffaf0','#f5f5f5'];
 
     const numObjects = isLowPerformance 
-      ? Math.floor(Math.random() * 4) + 6  
-      : Math.floor(Math.random() * 6) + 10; 
+      ? Math.floor(Math.random() * 4) + 6
+      : Math.floor(Math.random() * 6) + 10;
     
     for (let i = 0; i < numObjects; i++) {
       let obj: THREE.Object3D;
@@ -120,6 +121,8 @@ const ThreeBackground: React.FC = () => {
       toNDC(e);
 
       if (isDragging && selectedObject) {
+        e.preventDefault(); 
+        
         raycaster.setFromCamera(mouse, camera);
         const p = new THREE.Vector3();
         if (raycaster.ray.intersectPlane(dragPlane, p)) {
@@ -136,6 +139,9 @@ const ThreeBackground: React.FC = () => {
       const hit = raycaster.intersectObjects(scene.children, true);
 
       if (hit.length) {
+        isInteractingWithObject = true;
+        e.preventDefault(); 
+        
         selectedObject = hit[0].object;
         isDragging = true;
         dragStartTime = Date.now();
@@ -153,6 +159,8 @@ const ThreeBackground: React.FC = () => {
         if (mat && typeof mat.opacity === 'number') {
           mat.opacity = Math.min(mat.opacity + 0.4, 1);
         }
+      } else {
+        isInteractingWithObject = false; 
       }
     };
 
@@ -176,6 +184,7 @@ const ThreeBackground: React.FC = () => {
         selectedObject = null;
       }
       isDragging = false;
+      isInteractingWithObject = false;
       canvas.style.cursor = 'default';
     };
 
@@ -215,10 +224,24 @@ const ThreeBackground: React.FC = () => {
       }
     };
 
+    const onTouchStart = (e: TouchEvent) => {
+      if (isInteractingWithObject) {
+        e.preventDefault();
+      }
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (isInteractingWithObject || isDragging) {
+        e.preventDefault();
+      }
+    };
+
     canvas.addEventListener('pointermove', onPointerMove);
     canvas.addEventListener('pointerdown', onPointerDown);
     canvas.addEventListener('pointerup', onPointerUp);
     canvas.addEventListener('pointermove', onPointerHover);
+    canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', onTouchMove, { passive: false });
 
     const onResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -258,6 +281,7 @@ const ThreeBackground: React.FC = () => {
       animationId = requestAnimationFrame(animate);
 
       if (!isVisible) return;
+
       const now = performance.now();
       const elapsed = now - lastFrameTime;
       
@@ -295,13 +319,15 @@ const ThreeBackground: React.FC = () => {
     animate();
 
     return () => {
-      observer.disconnect(); 
+      observer.disconnect();
       window.removeEventListener('resize', onResize);
       window.removeEventListener('scroll', onScroll);
       canvas.removeEventListener('pointermove', onPointerMove);
       canvas.removeEventListener('pointerdown', onPointerDown);
       canvas.removeEventListener('pointerup', onPointerUp);
       canvas.removeEventListener('pointermove', onPointerHover);
+      canvas.removeEventListener('touchstart', onTouchStart);
+      canvas.removeEventListener('touchmove', onTouchMove);
       cancelAnimationFrame(animationId);
       renderer.dispose();
       scene.clear();
