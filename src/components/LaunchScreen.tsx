@@ -28,13 +28,23 @@ const LaunchScreen: React.FC<LaunchScreenProps> = ({ isVisible, onScrollStart })
   useEffect(() => {
     const el = contentRef.current;
     if (!el) return;
+    
+    let ticking = false;
+    
     const onScroll = () => {
-      const maxScroll = window.innerHeight * 0.5;
-      const progress = Math.min(window.scrollY / maxScroll, 1);
-      const scale = Math.max(1 - progress, 0.2);
-      el.style.setProperty('--launch-scale', String(scale));
-      el.style.opacity = String(scale);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const maxScroll = window.innerHeight * 0.5;
+          const progress = Math.min(window.scrollY / maxScroll, 1);
+          const scale = Math.max(1 - progress, 0.2);
+          el.style.setProperty('--launch-scale', String(scale));
+          el.style.opacity = String(scale);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
+    
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -75,7 +85,6 @@ const LaunchScreen: React.FC<LaunchScreenProps> = ({ isVisible, onScrollStart })
             className="flex flex-col items-center mb-16 space-y-4"
             style={{ pointerEvents: 'auto' }}
           >
-            {/* Row of icons */}
             <div className="flex justify-center space-x-8">
               <a
                 href="mailto:gunchev.db@gmail.com"

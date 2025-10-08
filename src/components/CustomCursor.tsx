@@ -6,10 +6,23 @@ const CustomCursor: React.FC = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let mouseX = 0;
+    let mouseY = 0;
+    let ticking = false;
+
     const updateCursor = (e: MouseEvent) => {
-      if (cursorRef.current) {
-        cursorRef.current.style.left = `${e.clientX}px`;
-        cursorRef.current.style.top = `${e.clientY}px`;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          if (cursorRef.current) {
+            cursorRef.current.style.left = `${mouseX}px`;
+            cursorRef.current.style.top = `${mouseY}px`;
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 

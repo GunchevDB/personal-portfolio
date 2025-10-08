@@ -62,6 +62,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
                         <img
                               src={project.image}
                               alt={project.title}
+                              loading="lazy"
+                              decoding="async"
                               className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

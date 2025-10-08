@@ -22,48 +22,52 @@ function App() {
     gsap.set('.projects-section', { y: 50, opacity: 0, visibility: 'visible' });
     gsap.set('.footer-section', { y: 50, opacity: 0, visibility: 'visible' });
     
-    gsap.to('.projects-section', {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.projects-section',
-          start: 'top 85%',
-          end: 'top 15%',
-          toggleActions: 'play none none reverse',
-          invalidateOnRefresh: true
-        }
-      });
-      
-      gsap.to('.footer-section', {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.footer-section',
-          start: 'top 85%',
-          end: 'top 15%',
-          toggleActions: 'play none none reverse',
-          invalidateOnRefresh: true
-        }
-      });
+    ScrollTrigger.batch('.projects-section, .footer-section', {
+      onEnter: (elements) => {
+        gsap.to(elements, {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+          stagger: 0.2
+        });
+      },
+      start: 'top 85%',
+    });
+    
+    const refreshTimeout = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 300); 
+    
+    return () => {
+      clearTimeout(refreshTimeout);
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    let ticking = false;
     
     const handleScroll = () => {
-      if (window.scrollY > window.innerHeight * 0.5) {
-        setShowLaunchScreen(false);
-      } else {
-        setShowLaunchScreen(true);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => {
+            const shouldShow = window.scrollY <= window.innerHeight * 0.5;
+            setShowLaunchScreen(shouldShow);
+          }, 16); 
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const handleScrollStart = () => {
@@ -84,7 +88,6 @@ function App() {
       <Header isVisible={!showLaunchScreen} />
       
       <main>
-        {}
         <div className="h-screen" />
         <div className="relative z-10 projects-section">
           <Projects onProjectSelect={setSelectedProject} />

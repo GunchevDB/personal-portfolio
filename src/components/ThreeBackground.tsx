@@ -9,6 +9,9 @@ const ThreeBackground: React.FC = () => {
 
     mountRef.current.querySelectorAll('canvas').forEach(c => c.remove());
 
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const isLowPerformance = isMobile || navigator.hardwareConcurrency <= 4;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -18,9 +21,9 @@ const ThreeBackground: React.FC = () => {
     );
     camera.position.z = 10;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isLowPerformance });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(isLowPerformance ? 1 : Math.min(window.devicePixelRatio, 2));
     mountRef.current.appendChild(renderer.domElement);
     const canvas = renderer.domElement;
     renderer.domElement.style.pointerEvents = 'auto';
@@ -60,22 +63,26 @@ const ThreeBackground: React.FC = () => {
     };
 
     const objects: THREE.Object3D[] = [];
+    
     const geometryTypes = [
       new THREE.BoxGeometry(1, 1, 1),
-      new THREE.SphereGeometry(0.5, 32, 32),
-      new THREE.ConeGeometry(0.5, 1, 32),
+      new THREE.SphereGeometry(0.5, 16, 16),
+      new THREE.ConeGeometry(0.5, 1, 16),
       new THREE.OctahedronGeometry(0.7),
       new THREE.TetrahedronGeometry(0.8),
-      new THREE.CylinderGeometry(0.4, 0.4, 1, 32),
+      new THREE.CylinderGeometry(0.4, 0.4, 1, 16),
       new THREE.DodecahedronGeometry(0.6),
       new THREE.IcosahedronGeometry(0.6),
-      new THREE.TorusGeometry(0.5, 0.2, 16, 100),
-      new THREE.TorusKnotGeometry(0.4, 0.15, 100, 16),
+      new THREE.TorusGeometry(0.5, 0.2, 12, 48),
     ];
+    
     const emojis = ['🚀','⭐','💎','🔥','⚡','🌟','💫','🎯','🎨','🎭','🎪','🎲','🎳'];
     const softColors = ['#ffffff','#f0f0f0','#e8e8e8','#d0d0d0','#c8c8c8','#f5f5dc','#f0f8ff','#f8f8ff','#fffaf0','#f5f5f5'];
 
-    const numObjects = Math.floor(Math.random() * 11) + 15;
+    const numObjects = isLowPerformance 
+      ? Math.floor(Math.random() * 4) + 6  
+      : Math.floor(Math.random() * 6) + 10; 
+    
     for (let i = 0; i < numObjects; i++) {
       let obj: THREE.Object3D;
       if (Math.random() < 0.3) {
@@ -116,8 +123,8 @@ const ThreeBackground: React.FC = () => {
         raycaster.setFromCamera(mouse, camera);
         const p = new THREE.Vector3();
         if (raycaster.ray.intersectPlane(dragPlane, p)) {
-        selectedObject.position.copy(p.add(dragOffset));
-    }
+          selectedObject.position.copy(p.add(dragOffset));
+        }
       }
     };
 
@@ -231,8 +238,31 @@ const ThreeBackground: React.FC = () => {
     window.addEventListener('scroll', onScroll);
 
     let animationId = 0;
+    let lastFrameTime = 0;
+    const targetFPS = isLowPerformance ? 30 : 60;
+    const frameInterval = 1000 / targetFPS;
+    let isVisible = true;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    
+    if (mountRef.current) {
+      observer.observe(mountRef.current);
+    }
+
     const animate = () => {
       animationId = requestAnimationFrame(animate);
+
+      if (!isVisible) return;
+      const now = performance.now();
+      const elapsed = now - lastFrameTime;
+      
+      if (elapsed < frameInterval) return;
+      lastFrameTime = now - (elapsed % frameInterval);
 
       objects.forEach((o, i) => {
         const v = velocities.get(o) || new THREE.Vector3();
@@ -265,6 +295,7 @@ const ThreeBackground: React.FC = () => {
     animate();
 
     return () => {
+      observer.disconnect(); 
       window.removeEventListener('resize', onResize);
       window.removeEventListener('scroll', onScroll);
       canvas.removeEventListener('pointermove', onPointerMove);
